@@ -1,0 +1,113 @@
+{
+  "strategy": "LLM_Polymarket_Strategy",
+  "strategy_path": "strategies/",
+
+  "max_open_trades": 10,
+  "stake_currency": "USDT",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+
+  "dry_run": true,
+  "dry_run_wallet": 10000,
+
+  "cancel_open_orders_on_exit": false,
+
+  "unfilledtimeout": {
+    "entry": 10,
+    "exit": 10,
+    "exit_timeout_count": 0,
+    "unit": "minutes"
+  },
+
+  "entry_pricing": {
+    "price_side": "same",
+    "use_order_book": false,
+    "order_book_top": 1,
+    "price_last_balance": 0.0,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+
+  "exit_pricing": {
+    "price_side": "same",
+    "use_order_book": false,
+    "order_book_top": 1
+  },
+
+  "exchange": {
+    "name": "polymarket",
+    "key": "",
+    "secret": "",
+    "ccxt_config": {},
+    "ccxt_async_config": {},
+    "pair_whitelist": [
+      "BTC_100K_2025/USDT",
+      "ETH_5K_2025/USDT",
+      "US_ELECTION_2025/USDT"
+    ],
+    "pair_blacklist": []
+  },
+
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ],
+
+  "edge": {
+    "enabled": false
+  },
+
+  "telegram": {
+    "enabled": false,
+    "token": "",
+    "chat_id": ""
+  },
+
+  "api_server": {
+    "enabled": true,
+    "listen_ip_address": "127.0.0.1",
+    "listen_port": 8080,
+    "verbosity": "error",
+    "enable_openapi": false,
+    "jwt_secret_key": "change-this-to-a-random-secret",
+    "ws_token": "change-this-to-a-random-token",
+    "CORS_origins": [],
+    "username": "freqtrader",
+    "password": "freqtrader"
+  },
+
+  "bot_name": "thalas_polymarket_bot",
+  "initial_state": "running",
+  "force_entry_enable": false,
+  "internals": {
+    "process_throttle_secs": 3600
+  },
+
+  "llm_api_url": "http://localhost:8000",
+
+  "llm_consensus": {
+    "min_confidence": 0.75,
+    "min_agreement": 0.70,
+    "provider_weights": {
+      "Anthropic": 1.0,
+      "OpenAI": 1.0,
+      "Gemini": 0.8,
+      "Grok": 0.7
+    }
+  },
+
+  "polymarket_settings": {
+    "min_volume_24h": 10000,
+    "min_days_to_expiration": 7,
+    "exit_days_before_expiration": 1,
+    "kelly_fraction": 0.25,
+    "max_stake_per_market": 0.10
+  },
+
+  "dataformat_ohlcv": "json",
+  "dataformat_trades": "jsongz"
+}

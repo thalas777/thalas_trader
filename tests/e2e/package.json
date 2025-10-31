@@ -1,0 +1,26 @@
+{
+  "name": "thalas-trader-e2e-tests",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for Thalas Trader frontend",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "report": "playwright show-report playwright-report",
+    "codegen": "playwright codegen http://localhost:3000"
+  },
+  "keywords": ["e2e", "playwright", "testing", "thalas-trader"],
+  "author": "Thalas Trader Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.9.2",
+    "playwright": "^1.56.1",
+    "typescript": "^5.9.3"
+  }
+}

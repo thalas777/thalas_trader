@@ -1,6 +1,6 @@
 """
-xAI Grok Provider Implementation
-Supports Grok models for trading signal generation
+DeepSeek Provider Implementation
+Supports DeepSeek models for trading signal generation
 Uses OpenAI-compatible API
 """
 import json
@@ -26,34 +26,28 @@ from .base import (
 logger = logging.getLogger(__name__)
 
 
-class GrokProvider(BaseLLMProvider):
+class DeepSeekProvider(BaseLLMProvider):
     """
-    xAI Grok provider implementation
+    DeepSeek provider implementation
 
     Uses OpenAI-compatible API endpoint.
-    Supports Grok models including:
-    - grok-2-latest (recommended)
-    - grok-2-1212
-    - grok-vision-2
-    - grok-beta (deprecated)
-    - grok-vision-beta (deprecated)
+    Supports DeepSeek models including:
+    - deepseek-chat (recommended)
+    - deepseek-coder
     """
 
-    # Default base URL for xAI API
-    DEFAULT_BASE_URL = "https://api.x.ai/v1"
+    # Default base URL for DeepSeek API
+    DEFAULT_BASE_URL = "https://api.deepseek.com/v1"
 
-    # Pricing per 1M tokens (estimated, adjust based on actual pricing)
+    # Pricing per 1M tokens (as of 2024)
     PRICING = {
-        "grok-2-latest": {"input": 5.0, "output": 15.0},
-        "grok-2-1212": {"input": 5.0, "output": 15.0},
-        "grok-vision-2": {"input": 5.0, "output": 15.0},
-        "grok-beta": {"input": 5.0, "output": 15.0},  # Deprecated
-        "grok-vision-beta": {"input": 5.0, "output": 15.0},  # Deprecated
+        "deepseek-chat": {"input": 0.14, "output": 0.28},
+        "deepseek-coder": {"input": 0.14, "output": 0.28},
     }
 
     def __init__(self, config: ProviderConfig):
         """
-        Initialize Grok provider
+        Initialize DeepSeek provider
 
         Args:
             config: Provider configuration
@@ -63,8 +57,8 @@ class GrokProvider(BaseLLMProvider):
         """
         if not OPENAI_AVAILABLE:
             raise ProviderError(
-                "grok",
-                "OpenAI library not installed (required for Grok). "
+                "deepseek",
+                "OpenAI library not installed (required for DeepSeek). "
                 "Install with: pip install openai"
             )
 
@@ -86,10 +80,10 @@ class GrokProvider(BaseLLMProvider):
                 timeout=config.timeout,
                 max_retries=config.max_retries,
             )
-            logger.info(f"Grok provider initialized with model {config.model} at {base_url}")
+            logger.info(f"DeepSeek provider initialized with model {config.model} at {base_url}")
 
         except Exception as e:
-            raise ProviderError("grok", f"Failed to initialize client: {e}", e)
+            raise ProviderError("deepseek", f"Failed to initialize client: {e}", e)
 
     async def generate_signal(
         self,
@@ -99,7 +93,7 @@ class GrokProvider(BaseLLMProvider):
         current_price: Optional[float] = None,
     ) -> ProviderResponse:
         """
-        Generate trading signal using Grok
+        Generate trading signal using DeepSeek
 
         Args:
             market_data: Market indicators and data
@@ -119,7 +113,7 @@ class GrokProvider(BaseLLMProvider):
             # Build prompt
             prompt = self.build_prompt(market_data, pair, timeframe, current_price)
 
-            # Call Grok API (OpenAI-compatible)
+            # Call DeepSeek API (OpenAI-compatible)
             completion = await self.client.chat.completions.create(
                 model=self.config.model,
                 messages=[{"role": "user", "content": prompt}],
@@ -166,7 +160,7 @@ class GrokProvider(BaseLLMProvider):
             )
 
             logger.info(
-                f"Grok signal generated: {signal_data['decision']} "
+                f"DeepSeek signal generated: {signal_data['decision']} "
                 f"(confidence: {signal_data['confidence']:.2f}, "
                 f"latency: {latency_ms:.0f}ms, tokens: {tokens_used})"
             )
@@ -176,7 +170,7 @@ class GrokProvider(BaseLLMProvider):
         except json.JSONDecodeError as e:
             error = ProviderError(
                 self.config.name,
-                f"Failed to parse Grok response as JSON: {e}",
+                f"Failed to parse DeepSeek response as JSON: {e}",
                 e
             )
             self.update_metrics(0, error)
@@ -186,7 +180,7 @@ class GrokProvider(BaseLLMProvider):
             latency_ms = (time.time() - start_time) * 1000
             error = ProviderError(
                 self.config.name,
-                f"Grok API call failed: {e}",
+                f"DeepSeek API call failed: {e}",
                 e
             )
             self.update_metrics(latency_ms, error)
@@ -194,7 +188,7 @@ class GrokProvider(BaseLLMProvider):
 
     async def health_check(self) -> bool:
         """
-        Check if Grok API is accessible
+        Check if DeepSeek API is accessible
 
         Returns:
             True if healthy, False otherwise
@@ -224,10 +218,10 @@ class GrokProvider(BaseLLMProvider):
         Returns:
             Estimated cost in USD
         """
-        # Get model-specific pricing or use grok-beta as default
+        # Get model-specific pricing or use deepseek-chat as default
         pricing = self.PRICING.get(
             self.config.model,
-            self.PRICING["grok-beta"]
+            self.PRICING["deepseek-chat"]
         )
 
         input_cost = (prompt_tokens / 1_000_000) * pricing["input"]
@@ -237,10 +231,10 @@ class GrokProvider(BaseLLMProvider):
 
     def _parse_response(self, response_text: str) -> Dict[str, Any]:
         """
-        Parse Grok's JSON response
+        Parse DeepSeek's JSON response
 
         Args:
-            response_text: Raw response text from Grok
+            response_text: Raw response text from DeepSeek
 
         Returns:
             Parsed signal data
@@ -249,7 +243,7 @@ class GrokProvider(BaseLLMProvider):
             json.JSONDecodeError: If response is not valid JSON
             ValueError: If response missing required fields
         """
-        # Handle cases where Grok wraps JSON in markdown code blocks
+        # Handle cases where DeepSeek wraps JSON in markdown code blocks
         if "```json" in response_text:
             json_str = response_text.split("```json")[1].split("```")[0].strip()
         elif "```" in response_text:

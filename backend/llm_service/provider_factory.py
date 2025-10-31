@@ -16,6 +16,7 @@ from .providers import (
     GeminiProvider,
     GrokProvider,
 )
+from .providers.deepseek_provider import DeepSeekProvider
 
 logger = logging.getLogger(__name__)
 
@@ -34,14 +35,16 @@ class ProviderFactory:
         "openai": OpenAIProvider,
         "gemini": GeminiProvider,
         "grok": GrokProvider,
+        "deepseek": DeepSeekProvider,
     }
 
     # Default model configurations for each provider
     DEFAULT_MODELS = {
         "anthropic": "claude-3-5-sonnet-20241022",
         "openai": "gpt-4-turbo",
-        "gemini": "gemini-1.5-pro",
-        "grok": "grok-beta",
+        "gemini": "gemini-2.0-flash",
+        "grok": "grok-2-latest",
+        "deepseek": "deepseek-chat",
     }
 
     @classmethod

@@ -31,6 +31,9 @@ class GeminiProvider(BaseLLMProvider):
     Google Gemini provider implementation
 
     Supports Gemini models including:
+    - gemini-2.5-flash (recommended)
+    - gemini-2.5-pro
+    - gemini-2.0-flash
     - gemini-1.5-pro
     - gemini-1.5-flash
     - gemini-1.0-pro
@@ -38,6 +41,9 @@ class GeminiProvider(BaseLLMProvider):
 
     # Pricing per 1M tokens (as of Oct 2024)
     PRICING = {
+        "gemini-2.5-flash": {"input": 0.35, "output": 1.05},
+        "gemini-2.5-pro": {"input": 3.5, "output": 10.5},
+        "gemini-2.0-flash": {"input": 0.35, "output": 1.05},
         "gemini-1.5-pro": {"input": 3.5, "output": 10.5},
         "gemini-1.5-flash": {"input": 0.35, "output": 1.05},
         "gemini-1.0-pro": {"input": 0.5, "output": 1.5},

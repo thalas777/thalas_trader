@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-dev-key-change-in-p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,.app.github.dev').split(',')
 
 
 # Application definition
@@ -163,9 +163,15 @@ SPECTACULAR_SETTINGS = {
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000'
+    'http://localhost:3000,http://127.0.0.1:3000,https://alarming-wand-4j745q955vvvh4qq-3000.app.github.dev'
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Configuration for GitHub Codespaces
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://alarming-wand-4j745q955vvvh4qq-3000.app.github.dev,http://localhost:3000,http://127.0.0.1:3000'
+).split(',')
 
 # Freqtrade Configuration
 FREQTRADE_API_URL = os.getenv('FREQTRADE_API_URL', 'http://localhost:8080')

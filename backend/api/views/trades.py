@@ -2,7 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from freqtrade_client.client import get_freqtrade_client
+from api.models import PaperTrade
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,23 @@ class TradeListView(APIView):
             limit = int(request.query_params.get("limit", 20))
             offset = int(request.query_params.get("offset", 0))
 
-            client = get_freqtrade_client()
-            trades = client.get_trades(limit=limit, offset=offset)
+            all_trades = PaperTrade.objects.all()[offset:offset+limit]
+
+            trades = [
+                {
+                    "trade_id": trade.id,
+                    "pair": trade.pair,
+                    "type": trade.trade_type,
+                    "amount": float(trade.amount),
+                    "price": float(trade.price),
+                    "profit": float(trade.profit) if trade.profit else None,
+                    "timestamp": trade.timestamp.isoformat(),
+                    "bot_name": trade.bot.name,
+                    "consensus_decision": trade.consensus_decision,
+                    "consensus_confidence": float(trade.consensus_confidence),
+                }
+                for trade in all_trades
+            ]
 
             return Response(
                 {

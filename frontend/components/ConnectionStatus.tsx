@@ -26,13 +26,24 @@ export function ConnectionStatus({
   const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected')
 
   useEffect(() => {
+    console.log('🔵 [ConnectionStatus] State update:', {
+      hasData: !!data,
+      hasError: !!error,
+      isValidating,
+      data,
+      error
+    })
     if (data && !error) {
+      console.log('✅ [ConnectionStatus] Setting connected state')
       setLastUpdate(new Date())
       setConnectionState('connected')
     } else if (error) {
+      console.log('❌ [ConnectionStatus] Setting disconnected state due to error:', error)
       setConnectionState('disconnected')
+    } else {
+      console.log('⏳ [ConnectionStatus] No data yet, staying disconnected')
     }
-  }, [data, error])
+  }, [data, error, isValidating])
 
   // Determine if connection is slow (more than 2 minutes since last update)
   useEffect(() => {
